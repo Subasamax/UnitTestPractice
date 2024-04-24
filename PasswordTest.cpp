@@ -132,3 +132,66 @@ TEST(PasswordTest, mixed_case_all_lowercase){
 }
 
 
+TEST(PasswordTest, mixed_case_all_lowercase_with_special){
+	Password my_password;
+	bool actual = my_password.has_mixed_case("aasdf$#%^sds");
+	ASSERT_EQ(false, actual);
+}
+
+
+TEST(PasswordTest, contructor_correct){
+	Password my_password = Password();
+	bool actual = my_password.authenticate("ChicoCA-95929");
+	ASSERT_EQ(true, actual);
+}
+
+TEST(PasswordTest, authenticate_wrong){
+	Password my_password = Password();
+	bool actual = my_password.authenticate("ChicoCA");
+	ASSERT_EQ(false, actual);
+}
+
+TEST(PasswordTest, authenticate_correct){
+	Password my_password;
+	bool actual = my_password.authenticate("");
+	ASSERT_EQ(false, actual);
+}
+
+
+TEST(PasswordTest, password_set_correct){
+	Password my_password;
+	my_password.set("helloWorld");
+	bool actual = my_password.authenticate("helloWorld");
+	ASSERT_EQ(true, actual);
+}
+
+TEST(PasswordTest, password_less_than_eight){
+	Password my_password;
+	my_password.set("hello");
+	bool actual = my_password.authenticate("hello");
+	ASSERT_EQ(false, actual);
+}
+
+TEST(PasswordTest, password_more_than_three_leading){
+	Password my_password;
+	my_password.set("hhhhHelo");
+	bool actual = my_password.authenticate("hhhhHelo");
+	ASSERT_EQ(false, actual);
+}
+
+TEST(PasswordTest, password_less_than_three_leading_no_mixed){
+	Password my_password;
+	my_password.set("felloyelo");
+	bool actual = my_password.authenticate("felloyelo");
+	ASSERT_EQ(false, actual);
+}
+
+TEST(PasswordTest, password_in_history){
+	Password my_password = Password();
+	my_password.set("Felloyelo");
+	my_password.set("ChicoCA-95929");
+	my_password.set("ChicoCA-95929");
+	bool actual = my_password.authenticate("ChicoCA-95929");
+	ASSERT_EQ(false, actual);
+}
+
